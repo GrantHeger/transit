@@ -42,21 +42,20 @@
 		 )))
 
 
-;(def days ["MON" "TUE" "WED" "THU" "FRI" "SAT" "SUN"])
-;(defn make-calendar-csv
-;  "Build GTFS calendar file, one day per service (might as well just
-;  output the raw csv!"
-;  []
-;  (let [zeroes (vec (repeat 7 0))
-;		start "20140101"
-;		end "20180101"]
-;	(->> (for [n (range 7)]
-;		   [(get days n) (assoc zeroes n 1) start end])
-;		 (map flatten)
-;		 (map csv/to-csv)
-;		 (apply str)
-;		 (str "service_id,monday,tuesday,wednesday,thursday,friday,saturday,sunday,start_date,end_date\r\n")
-;		 )))
+(defn make-calendar-csv
+  "Build GTFS calendar file, one day per service.
+  Might as well just output the raw csv!"
+  []
+  (let [days ["MON" "TUE" "WED" "THU" "FRI" "SAT" "SUN"]
+		zeroes (vec (repeat 7 0))
+		start "20150101"
+		end "20200101"]
+	(->> (for [n (range 7)]
+		   [(get days n) (assoc zeroes n 1) start end])
+		 (map (comp csv/to-csv flatten))
+		 (apply str)
+		 (str "service_id,monday,tuesday,wednesday,thursday,friday,saturday,sunday,start_date,end_date\r\n")
+		 )))
 
 
 (defn main
@@ -66,6 +65,8 @@
   (spit "feed/stops.txt" (make-stops-csv))
   (println "Creating" "feed/routes.txt")
   (spit "feed/routes.txt" (make-routes-csv))
+  (println "Creating" "feed/calendar.txt")
+  (spit "feed/calendar.txt" (make-calendar-csv))
   (println "Done")
   )
 
