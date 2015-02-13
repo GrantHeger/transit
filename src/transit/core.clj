@@ -25,9 +25,8 @@
   "Build Ballarat GTFS stops file from PTV data"
   []
   (->> ballarat-stops
-	   (map (comp csv/to-csv ptv/stop-to-gtfs))
-	   (apply str)
-	   (str "stop_id,stop_name,stop_lat,stop_lng\r\n")
+	   (map ptv/stop-to-gtfs)
+	   (csv/to-csv ["stop_id" "stop_name" "stop_lat" "stop_lng"])
 	   ))
 
 
@@ -36,9 +35,8 @@
   []
   (let [f #(vector (:line_id %) (:line_name %) "" gtfs/BUS)]
 	(->> (set routes)
-		 (map (comp csv/to-csv f))
-		 (apply str)
-		 (str "route_id,route_short_name,route_long_name,route_type\r\n")
+		 (map f)
+		 (csv/to-csv ["route_id" "route_short_name" "route_long_name" "route_type"])
 		 )))
 
 
@@ -52,9 +50,8 @@
 		end "20200101"]
 	(->> (for [n (range 7)]
 		   [(get days n) (assoc zeroes n 1) start end])
-		 (map (comp csv/to-csv flatten))
-		 (apply str)
-		 (str "service_id,monday,tuesday,wednesday,thursday,friday,saturday,sunday,start_date,end_date\r\n")
+		 (map flatten)
+		 (csv/to-csv ["service_id" "monday" "tuesday" "wednesday" "thursday" "friday" "saturday" "sunday" "start_date" "end_date"])
 		 )))
 
 
@@ -63,10 +60,16 @@
   (println "Building feed for Ballarat bus stops")
   (println "Creating" "feed/stops.txt")
   (spit "feed/stops.txt" (make-stops-csv))
-  (println "Creating" "feed/routes.txt")
-  (spit "feed/routes.txt" (make-routes-csv))
+  ;(println "Creating" "feed/routes.txt")
+  ;(spit "feed/routes.txt" (make-routes-csv))
   (println "Creating" "feed/calendar.txt")
   (spit "feed/calendar.txt" (make-calendar-csv))
   (println "Done")
   )
+
+
+(def headings ["service_id" "monday" "tuesday" "start_date"])
+
+(clojure.string/join "," headings)
+
 
