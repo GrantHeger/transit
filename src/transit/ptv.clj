@@ -103,7 +103,7 @@
 	   set))
 
 
-(defn fetch-line-run-ids
+(defn fetch-runs-by-line
   "Fetch all run IDs for given line id"
   [line]
   (->> (fetch-stops-on-line BUS line)
