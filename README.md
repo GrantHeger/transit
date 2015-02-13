@@ -1,8 +1,18 @@
 # transit
 
-A Clojure library designed to convert Public Transport Victoria (PTV) data to Google Transit (GTFS) data.
+A Clojure library designed to convert Public Transport Victoria (PTV) data to General Transit Feed Specification (GTFS) data.
 
 This code is a work in progress, and is NOT YET OPERATIONAL!
+
+## Glossary
+
+PTV and Google use different terms for similar concepts.
+
+PTV           | GTFS
+------------- | -------------
+line          | route
+run           | trip
+
 
 ## Usage
 
