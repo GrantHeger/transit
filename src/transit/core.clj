@@ -18,12 +18,14 @@
 	))
 
 
+(def routes (mapcat ptv/fetch-lines (map :stop_id ballarat-stops)))
+
+
 (defn make-stops-csv
   "Build Ballarat GTFS stops file from PTV data"
   []
   (->> ballarat-stops
-	   (map ptv/stop-to-gtfs)
-	   (map csv/to-csv)
+	   (map (comp csv/to-csv ptv/stop-to-gtfs))
 	   (apply str)
 	   (str "stop_id,stop_name,stop_lat,stop_lng\r\n")
 	   ))
@@ -33,12 +35,8 @@
   "Build Ballarat GTFS routes file from static data"
   []
   (let [f #(vector (:line_id %) (:line_name %) "" gtfs/BUS)]
-	(->> ballarat-stops
-		 (map :stop_id)
-		 (mapcat ptv/fetch-lines)
-		 set
-		 (map f)
-		 (map csv/to-csv)
+	(->> (set routes)
+		 (map (comp csv/to-csv f))
 		 (apply str)
 		 (str "route_id,route_short_name,route_long_name,route_type\r\n")
 		 )))
