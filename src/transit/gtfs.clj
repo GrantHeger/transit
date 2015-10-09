@@ -1,5 +1,5 @@
 (ns transit.gtfs
-    "Google Transit Feed Specification"
+    "General Transit Feed Specification"
     )
 
 ; Google Transit transport modes (incomplete)
